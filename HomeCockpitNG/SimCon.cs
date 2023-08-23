@@ -2,8 +2,9 @@
 using pmdgTests;
 using System;
 using System.Runtime.InteropServices;
+using System.Timers;
 
-namespace SimConModels
+namespace SimCon
 {
     public enum DEFINITION
     {
@@ -32,18 +33,13 @@ namespace SimConModels
         CDU_REQUEST
     }
 
-    /*public enum EVENT
-    {
-        Dummy, KEY_TOGGLE_VACUUM_FAILURE, KEY_TOGGLE_ENGINE1_FAILURE, KEY_TOGGLE_ENGINE2_FAILURE, KEY_TOGGLE_ENGINE3_FAILURE, KEY_TOGGLE_ENGINE4_FAILURE,
-        KEY_TOGGLE_ELECTRICAL_FAILURE, KEY_TOGGLE_PITOT_BLOCKAGE, KEY_TOGGLE_STATIC_PORT_BLOCKAGE, KEY_TOGGLE_HYDRAULIC_FAILURE,
-        KEY_TOGGLE_TOTAL_BRAKE_FAILURE, KEY_TOGGLE_LEFT_BRAKE_FAILURE, KEY_TOGGLE_RIGHT_BRAKE_FAILURE
-    };*/
-
     public class SimCon
     {
         private static readonly SimCon instance = new();
 
         public event EventHandler<string>? SimException;
+
+        private Timer? ConnectionTimer;
 
         public bool Connected { get; private set; } = false;
 
@@ -61,7 +57,27 @@ namespace SimConModels
 
         private SimCon()
         {
+            StartTimers();
+        }
 
+        public void StartTimers()
+        {
+            ConnectionTimer = new Timer
+            {
+                Interval = 1000
+            };
+            ConnectionTimer.Elapsed += ConnectionTimer_Elapsed;
+            ConnectionTimer.AutoReset = true;
+            ConnectionTimer.Enabled = true;
+            ConnectionTimer.Start();
+        }
+
+        private void ConnectionTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            if (Connect())
+            {
+                ConnectionTimer!.Stop();
+            }
         }
 
         public void SetHandle(IntPtr _ptr)
@@ -84,18 +100,6 @@ namespace SimConModels
             return (IntPtr)0;
         }
 
-        /*public void RegisterList(List<SimVarModel> list)
-        {
-            foreach (SimVarModel simVarModel in list)
-            {
-                if (simVarModel.IsEvent == false)
-                {
-                    simconnect!.AddToDataDefinition(simVarModel.eDef, simVarModel.SimVariable, simVarModel.Unit, SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-                    simconnect!.RegisterDataDefineStruct<double>(simVarModel.eDef);
-                }
-            }
-        }*/
-
         public bool Connect()
         {
             Console.WriteLine("Connect");
@@ -108,7 +112,7 @@ namespace SimConModels
                     simconnect.OnRecvQuit += new SimConnect.RecvQuitEventHandler(SimConnect_OnRecvQuit);
                     simconnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(SimConnect_OnRecvException);
                     simconnect.OnRecvEvent += new SimConnect.RecvEventEventHandler(SimConnect_OnRecvEvent);
-                    simconnect.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(SimConnect_OnRecvSimobjectDataBytype);
+                    //simconnect.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(SimConnect_OnRecvSimobjectDataBytype);
                     simconnect.OnRecvClientData += new SimConnect.RecvClientDataEventHandler(SimConnect_OnRecvClientData);
 
                     simconnect.MapClientDataNameToID(PMDG_SDK.PMDG_NG3_DATA_NAME, DATA_ID.PMDG_NG3_DATA_ID);
@@ -138,12 +142,6 @@ namespace SimConModels
             return Connected;
         }
 
-        /*public void UpdateData()
-        {
-            //simconnect!.RequestClientData(DATA_ID.PMDG_NG3_CDU_0_ID, DATA_REQUEST_ID.CDU_REQUEST, DEFINITION.PMDG_NG3_CDU_0_DEFINITION, SIMCONNECT_CLIENT_DATA_PERIOD.ON_SET, SIMCONNECT_CLIENT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
-            //simconnect.RequestDataOnSimObjectType(DATA_REQUEST_ID.CDU_REQUEST, DEFINITION.PMDG_NG3_CDU_0_DEFINITION, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
-        }*/
-
         public void Disconnect()
         {
             Console.WriteLine("Disconnect");
@@ -154,63 +152,9 @@ namespace SimConModels
                 simconnect = null;
             }
 
-            //SimConHelper.GetSimConHelper().SimConnectClosed();
-
             Connected = false;
-        }
-
-        /// <summary>
-        /// Sends request to update every element on list
-        /// </summary>
-        /// <param name="list"></param>
-        /*public void UpdateData(List<SimVarModel> list)
-        {
-            foreach (SimVarModel simVarModel in list)
-            {
-                if (simVarModel.IsEvent == false)
-                {
-                    try
-                    {
-                        simconnect!.RequestDataOnSimObjectType(simVarModel.eRequest, simVarModel.eDef, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
-                    }
-                    catch (Exception ex)
-                    {
-                        
-                    }
-                }
-            }
-        }*/
-
-        /// <summary>
-        /// When data is received it searches through Failable list and updates its value 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="data"></param>
-        private void SimConnect_OnRecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
-        {
-            uint iRequest = data.dwRequestID;
-            double dValue = (double)data.dwData[0];
-
-            //if (SimVarLists.GetSimVarLists().GetFailuresList() != null)
-            //foreach (SimVarModel oSimvarRequest in SimVarLists.GetSimVarLists().GetFailuresList())
-            //{
-            /*if (iRequest == (uint)oSimvarRequest.eRequest)
-            {
-                double dValue = (double)data.dwData[0];
-                oSimvarRequest.Value = dValue;
-                break;
-            }*/
-            //}
-
-            /*foreach (SimVarModel oSimvarRequest in SimVarLists.GetSimVarLists().GetDataList())
-            {
-                if (iRequest == (uint)oSimvarRequest.eRequest)
-                {
-                    double dValue = (double)data.dwData[0];
-                    oSimvarRequest.Value = dValue;
-                    break;
-                }
-            }*/
+            ConnectionTimer!.Start();
+            StateChanged?.Invoke(this, "Sim not found");
         }
 
         private void SimConnect_OnRecvClientData(SimConnect sender, SIMCONNECT_RECV_CLIENT_DATA data)
@@ -219,18 +163,17 @@ namespace SimConModels
             {
                 case DATA_REQUEST_ID.DATA_REQUEST:
                     {
-                        PMDG_SDK.PMDG_NG3_Data sData = (PMDG_SDK.PMDG_NG3_Data)data.dwData[0];
+                        //PMDG_SDK.PMDG_NG3_Data sData = (PMDG_SDK.PMDG_NG3_Data)data.dwData[0];
+                        pmdgData = (PMDG_SDK.PMDG_NG3_Data)data.dwData[0];
 
-                        foreach (var s in typeof(PMDG_SDK.PMDG_NG3_Data).GetFields(System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.GetField))
-                        {
-
-                        }
+                        
 
                         break;
                     }
                 case DATA_REQUEST_ID.CONTROL_REQUEST:
                     {
-                        PMDG_SDK.PMDG_NG3_Control conData = (PMDG_SDK.PMDG_NG3_Control)data.dwData[0];
+                        //PMDG_SDK.PMDG_NG3_Control conData = (PMDG_SDK.PMDG_NG3_Control)data.dwData[0];
+                        pmdgControl = (PMDG_SDK.PMDG_NG3_Control)data.dwData[0];
 
 
 
@@ -238,7 +181,8 @@ namespace SimConModels
                     }
                 case DATA_REQUEST_ID.CDU_REQUEST:
                     {
-                        PMDG_SDK.PMDG_NGX_CDU_Screen cduData = (PMDG_SDK.PMDG_NGX_CDU_Screen)data.dwData[0];
+                        //PMDG_SDK.PMDG_NGX_CDU_Screen cduData = (PMDG_SDK.PMDG_NGX_CDU_Screen)data.dwData[0];
+                        pmdgCDU = (PMDG_SDK.PMDG_NGX_CDU_Screen)data.dwData[0];
 
 
 
@@ -253,12 +197,7 @@ namespace SimConModels
         //Event received. Should trigger a request for the actual data.
         void SimConnect_OnRecvEvent(SimConnect sender, SIMCONNECT_RECV_EVENT recEvent)
         {
-            /*switch (recEvent.uEventID)
-            {
-                case (uint)EVENTS.AP_MASTER:
-                    simconnect.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_MCP, DEFINITION.MCP, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
-                    break;
-            }*/
+
         }
 
         public static int GetUserSimConnectWinEvent()

@@ -8,7 +8,7 @@
         Title="ShellView" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition Width="0.25*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
@@ -26,16 +26,16 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Button x:Name="Overview" Click="Overview_Click" Grid.Row="0">Overwiev</Button>
-            <Button x:Name="Aft_Overhead" Click="Aft_Overhead_Click" Grid.Row="1">Aft Overhead</Button>
-            <Button x:Name="Forward_Overhead" Click="Forward_Overhead_Click" Grid.Row="2">Forward Overhead</Button>
-            <Button x:Name="Glareshield" Click="Glareshield_Click" Grid.Row="3">Glareshield</Button>
-            <Button x:Name="Forward_Panel" Click="Forward_Panel_Click" Grid.Row="4">Forward Panel</Button>
-            <Button x:Name="Lower_Forward_Panel" Click="Lower_Forward_Panel_Click" Grid.Row="5">Lower Forward Panel</Button>
-            <Button x:Name="Control_Stand" Click="Control_Stand_Click" Grid.Row="6">Control Panel</Button>
-            <Button x:Name="FMS" Click="FMS_Click" Grid.Row="7">FMS</Button>
-            <Button x:Name="General_Misc" Click="General_Misc_Click" Grid.Row="8">General and misc</Button>
-            <Button x:Name="CDU" Click="CDU_Click" Grid.Row="9">CDU</Button>
+            <Button x:Name="Overview" Click="Overview_Click" Grid.Row="0" Style="{StaticResource ResourceKey=ShellButton}">Overwiev</Button>
+            <Button x:Name="Aft_Overhead" Click="Aft_Overhead_Click" Grid.Row="1" Style="{StaticResource ResourceKey=ShellButton}">Aft Overhead</Button>
+            <Button x:Name="Forward_Overhead" Click="Forward_Overhead_Click" Grid.Row="2" Style="{StaticResource ResourceKey=ShellButton}">Forward Overhead</Button>
+            <Button x:Name="Glareshield" Click="Glareshield_Click" Grid.Row="3" Style="{StaticResource ResourceKey=ShellButton}">Glareshield</Button>
+            <Button x:Name="Forward_Panel" Click="Forward_Panel_Click" Grid.Row="4" Style="{StaticResource ResourceKey=ShellButton}">Forward Panel</Button>
+            <Button x:Name="Lower_Forward_Panel" Click="Lower_Forward_Panel_Click" Grid.Row="5" Style="{StaticResource ResourceKey=ShellButton}">Lower Forward Panel</Button>
+            <Button x:Name="Control_Stand" Click="Control_Stand_Click" Grid.Row="6" Style="{StaticResource ResourceKey=ShellButton}">Control Panel</Button>
+            <Button x:Name="FMS" Click="FMS_Click" Grid.Row="7" Style="{StaticResource ResourceKey=ShellButton}">FMS</Button>
+            <Button x:Name="General_Misc" Click="General_Misc_Click" Grid.Row="8" Style="{StaticResource ResourceKey=ShellButton}">General and misc</Button>
+            <Button x:Name="CDU" Click="CDU_Click" Grid.Row="9" Style="{StaticResource ResourceKey=ShellButton}">CDU</Button>
         </Grid>
 
         <ContentControl x:Name="ActiveItem" Grid.Column="1" Grid.RowSpan="9" Content="{Binding}"/>

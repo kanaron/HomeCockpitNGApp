@@ -1,10 +1,6 @@
 ﻿using HomeCockpitNG.Views;
-using SimConModels;
+using SimCon;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Interop;
 
 namespace HomeCockpitNG.Presenters
@@ -12,6 +8,8 @@ namespace HomeCockpitNG.Presenters
     public class ShellPresenter
     {
         public ShellView ShellView { get; set; }
+
+        private readonly OverviewPresenter? _overviewPresenter;
 
         public ShellPresenter()
         {
@@ -28,18 +26,20 @@ namespace HomeCockpitNG.Presenters
             ShellView.General_Misc_Clicked += ShellView_General_Misc_Clicked;
             ShellView.CDU_Clicked += ShellView_CDU_Clicked;
 
+            _overviewPresenter = new();
+
+            ShellView.ActiveItem.Content = _overviewPresenter.OverViewView;
             ShellView.Show();
 
-
-            SimCon.GetSimCon().SetHandle(new WindowInteropHelper(ShellView).Handle);
+            SimCon.SimCon.GetSimCon().SetHandle(new WindowInteropHelper(ShellView).Handle);
 
             HwndSource lHwndSource = HwndSource.FromHwnd(new WindowInteropHelper(ShellView).Handle);
-            lHwndSource.AddHook(new HwndSourceHook(SimCon.GetSimCon().ProcessSimCon));
+            lHwndSource.AddHook(new HwndSourceHook(SimCon.SimCon.GetSimCon().ProcessSimCon));
         }
 
         private void ShellView_Overview_Clicked(object? sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            ShellView.ActiveItem.Content = _overviewPresenter!.OverViewView;
         }
 
         private void ShellView_CDU_Clicked(object? sender, EventArgs e)
