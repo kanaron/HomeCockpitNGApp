@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeCockpitNG.Presenters
+namespace HomeCockpitNG.Structures
 {
-    public class ForwardOverheadPresenter
+    internal class AftOverheadClass
     {
-
     }
 }

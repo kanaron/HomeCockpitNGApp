@@ -7,6 +7,27 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.2*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.2*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource ResourceKey=Text}" HorizontalAlignment="Center" >
+            Forward Overhead
+        </TextBlock>
+
+        <DataGrid Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" AlternatingRowBackground="LightSkyBlue" 
+                  ItemsSource="{Binding FilteredVarsList}" CanUserAddRows="False"
+                  AutoGenerateColumns="False" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             
+        </DataGrid>
     </Grid>
 </UserControl>

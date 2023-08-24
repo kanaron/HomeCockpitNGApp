@@ -1,5 +1,5 @@
 ﻿using Microsoft.FlightSimulator.SimConnect;
-using pmdgTests;
+using pmdgSDK;
 using System;
 using System.Runtime.InteropServices;
 using System.Timers;
