@@ -16,13 +16,23 @@ using System.Windows.Shapes;
 namespace HomeCockpitNG.Views
 {
     /// <summary>
-    /// Interaction logic for ForwardOverheadView.xaml
+    /// Interaction logic for DataViewView.xaml
     /// </summary>
-    public partial class ForwardOverheadView : UserControl
+    public partial class DataViewView : UserControl
     {
-        public ForwardOverheadView()
+        public DataViewView()
         {
             InitializeComponent();
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

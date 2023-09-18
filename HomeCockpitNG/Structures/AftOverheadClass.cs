@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace HomeCockpitNG.Structures
 {
-    internal class AftOverheadClass
+    public class AftOverheadClass
     {
+
     }
 }

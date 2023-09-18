@@ -1,6 +1,10 @@
-﻿using Microsoft.FlightSimulator.SimConnect;
+﻿using DataAccess;
+using HomeCockpitNG;
+using Microsoft.FlightSimulator.SimConnect;
 using pmdgSDK;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Timers;
 
@@ -50,14 +54,17 @@ namespace SimCon
         public IntPtr MHWnd { get; set; }
         SimConnect? simconnect = null;
 
-        PMDG_SDK.PMDG_NG3_Data pmdgData;
-        PMDG_SDK.PMDG_NG3_Control pmdgControl;
-        PMDG_SDK.PMDG_NGX_CDU_Screen pmdgCDU;
+        public PMDG_SDK.PMDG_NG3_Data pmdgData;
+        public PMDG_SDK.PMDG_NG3_Control pmdgControl;
+        public PMDG_SDK.PMDG_NGX_CDU_Screen pmdgCDU;
+
+        public List<PMDG_Data> PmdgDataList;
 
 
         private SimCon()
         {
             StartTimers();
+            PmdgDataList = SQLPmdgData.LoadData();
         }
 
         public void StartTimers()
@@ -166,7 +173,45 @@ namespace SimCon
                         //PMDG_SDK.PMDG_NG3_Data sData = (PMDG_SDK.PMDG_NG3_Data)data.dwData[0];
                         pmdgData = (PMDG_SDK.PMDG_NG3_Data)data.dwData[0];
 
-                        
+                        FieldInfo[] members = pmdgData.GetType().GetFields();
+
+                        foreach (FieldInfo fi in members)
+                        {
+                            string tempv = "";
+                            if (fi.FieldType == typeof(byte[]))
+                            {
+                                foreach (byte b in (byte[])fi.GetValue(pmdgData))
+                                {
+                                    if (b > 10)
+                                    {
+                                        tempv += System.Text.Encoding.UTF8.GetString(new[] { b });
+                                    }
+                                    else
+                                    {
+                                        tempv += Convert.ToInt32(b).ToString() + "|";
+                                    }
+                                }
+                            }
+                            else if (fi.FieldType == typeof(float[]))
+                            {
+                                foreach (float f in (float[])fi.GetValue(pmdgData))
+                                {
+                                    tempv += f.ToString() + "|";
+                                }
+                            }
+                            else if (fi.FieldType == typeof(ushort[]))
+                            {
+                                foreach (float f in (ushort[])fi.GetValue(pmdgData))
+                                {
+                                    tempv += f.ToString() + "|";
+                                }
+                            }
+                            else
+                                tempv = fi.GetValue(pmdgData).ToString();
+
+
+                            PmdgDataList.Find(x => x.Name == fi.Name).Value = tempv.ToString();
+                        }
 
                         break;
                     }
