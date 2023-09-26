@@ -24,6 +24,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Button x:Name="Overview" Click="Overview_Click" Grid.Row="0" Style="{StaticResource ResourceKey=ShellButton}">Overwiev</Button>
@@ -36,8 +37,9 @@
             <Button x:Name="FMS" Click="FMS_Click" Grid.Row="7" Style="{StaticResource ResourceKey=ShellButton}">FMS</Button>
             <Button x:Name="General_Misc" Click="General_Misc_Click" Grid.Row="8" Style="{StaticResource ResourceKey=ShellButton}">General and misc</Button>
             <Button x:Name="CDU" Click="CDU_Click" Grid.Row="9" Style="{StaticResource ResourceKey=ShellButton}">CDU</Button>
+            <Button x:Name="Controls" Click="Controls_Click" Grid.Row="10" Style="{StaticResource ResourceKey=ShellButton}">Controls</Button>
         </Grid>
 
-        <ContentControl x:Name="ActiveItem" Grid.Column="1" Grid.RowSpan="9" Content="{Binding}"/>
+        <ContentControl x:Name="ActiveItem" Grid.Column="1" Grid.RowSpan="10" Content="{Binding}"/>
     </Grid>
 </Window>

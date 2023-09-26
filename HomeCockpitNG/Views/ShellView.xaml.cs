@@ -20,6 +20,7 @@ namespace HomeCockpitNG.Views
         public event EventHandler? FMS_Clicked;
         public event EventHandler? General_Misc_Clicked;
         public event EventHandler? CDU_Clicked;
+        public event EventHandler? Controls_Clicked;
 
         public ShellView()
         {
@@ -74,6 +75,11 @@ namespace HomeCockpitNG.Views
         private void Overview_Click(object sender, RoutedEventArgs e)
         {
             Overview_Clicked?.Invoke(this, e);
+        }
+
+        private void Controls_Click(object sender, RoutedEventArgs e)
+        {
+            Controls_Clicked?.Invoke(this, e);
         }
     }
 }

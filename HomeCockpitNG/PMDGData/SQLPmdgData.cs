@@ -27,32 +27,5 @@ namespace HomeCockpitNG
                 return output.ToList();
             }
         }
-
-        public static void UpdateOption(PMDG_Data option)
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                if (cnn.Execute("update Options set OptionValue = @OptionValue where OptionName = @OptionName", option) <= 0)
-                {
-                    cnn.Execute("insert into Options (OptionName, OptionValue) values (@OptionName, @OptionValue)", option);
-                }
-            }
-        }
-
-        public static string LoadOptionValue(string optionName)
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                try
-                {
-                    var query = cnn.QueryFirst<string>(String.Format("select OptionValue from Options where OptionName = '{0}'", optionName));
-                    return query;
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-        }
     }
 }

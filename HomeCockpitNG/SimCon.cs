@@ -239,6 +239,18 @@ namespace SimCon
             }
         }
 
+        public void SetPMDGEvent(PMDG_SDK.PMDGEvents pmdgEvent, uint data)
+        {
+            if (simconnect == null)
+                return;
+
+            PMDG_SDK.PMDG_NG3_Control pmdgControl;
+            pmdgControl.Event = pmdgEvent;
+            pmdgControl.Parameter = data;
+
+            simconnect.SetClientData(DATA_ID.PMDG_NG3_CONTROL_ID, DEFINITION.PMDG_NG3_CONTROL_DEFINITION, SIMCONNECT_CLIENT_DATA_SET_FLAG.DEFAULT, 0, pmdgControl);
+        }
+
         //Event received. Should trigger a request for the actual data.
         void SimConnect_OnRecvEvent(SimConnect sender, SIMCONNECT_RECV_EVENT recEvent)
         {

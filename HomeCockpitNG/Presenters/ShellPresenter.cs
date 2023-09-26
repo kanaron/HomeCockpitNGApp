@@ -10,7 +10,8 @@ namespace HomeCockpitNG.Presenters
         public ShellView ShellView { get; set; }
 
         private readonly OverviewPresenter? _overviewPresenter;
-        private DataViewPresenter? _DataViewPresenter;
+        private DataViewPresenter? _dataViewPresenter;
+        private ControlsPresenter? _controlsPresenter;
 
         public ShellPresenter()
         {
@@ -26,6 +27,7 @@ namespace HomeCockpitNG.Presenters
             ShellView.FMS_Clicked += ShellView_FMS_Clicked;
             ShellView.General_Misc_Clicked += ShellView_General_Misc_Clicked;
             ShellView.CDU_Clicked += ShellView_CDU_Clicked;
+            ShellView.Controls_Clicked += ShellView_Controls_Clicked;
 
             _overviewPresenter = new();
 
@@ -36,6 +38,13 @@ namespace HomeCockpitNG.Presenters
 
             HwndSource lHwndSource = HwndSource.FromHwnd(new WindowInteropHelper(ShellView).Handle);
             lHwndSource.AddHook(new HwndSourceHook(SimCon.SimCon.GetSimCon().ProcessSimCon));
+        }
+
+        private void ShellView_Controls_Clicked(object? sender, EventArgs e)
+        {
+            _controlsPresenter = null;
+            _controlsPresenter = new();
+            ShellView.ActiveItem.Content = _controlsPresenter!.ControlsView;
         }
 
         private void ShellView_Overview_Clicked(object? sender, EventArgs e)
@@ -50,58 +59,58 @@ namespace HomeCockpitNG.Presenters
 
         private void ShellView_General_Misc_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.GENERAL_AND_MISC, "General and Misc");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.GENERAL_AND_MISC, "General and Misc");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_FMS_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.FMS, "FMS");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.FMS, "FMS");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_Control_Stand_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.CONTROL_PANEL, "Control Stand");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.CONTROL_PANEL, "Control Stand");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_Lower_Forward_Panel_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.LOWER_FORWARD_PANEL, "Lower Forward Panel");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.LOWER_FORWARD_PANEL, "Lower Forward Panel");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_Forward_Panel_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.FORWARD_PANEL, "Forward Panel");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.FORWARD_PANEL, "Forward Panel");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_Glareshield_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.GLARESHIELD, "Glareshield");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.GLARESHIELD, "Glareshield");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_Forward_Overhead_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.FORWARD_OVERHEAD, "Forward Overhead");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.FORWARD_OVERHEAD, "Forward Overhead");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
 
         private void ShellView_Aft_Overhead_Clicked(object? sender, EventArgs e)
         {
-            _DataViewPresenter = null;
-            _DataViewPresenter = new(MODULES.AFT_OVERHEAD, "Aft Overhead");
-            ShellView.ActiveItem.Content = _DataViewPresenter!.DataViewView;
+            _dataViewPresenter = null;
+            _dataViewPresenter = new(MODULES.AFT_OVERHEAD, "Aft Overhead");
+            ShellView.ActiveItem.Content = _dataViewPresenter!.DataViewView;
         }
     }
 }
